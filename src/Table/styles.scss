@@ -1,0 +1,20 @@
+@import '../../node_modules/bulma/sass/helpers/color.sass';
+
+
+.handsontable th {
+    background-color: $white;
+    color: $grey;
+
+    .relative{
+        padding: 10px !important;
+    }
+}
+
+.handsontable td{
+    padding: 5px !important;
+}
+
+.handsontable td.area {
+    background-color: $grey-light;
+    color: white;
+}
