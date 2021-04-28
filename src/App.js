@@ -3,10 +3,49 @@ import React, {useState} from "react";
 import Cols from "./DefaultCols";
 import Data from "./DefaultData";
 import Tab from "./Table/Table"
+import "../node_modules/bulma/css/bulma.css";
 
 
 function App() {
   const [currTab,setTab] = useState(0);
+  const [conData,setConData] = useState(Data.contacts);
+  const [dealData,setDealData] = useState(Data.deals);
+  const [conCols,setConCols] = useState(Cols.ContactCols);
+  const [dealCols,setDealCols] = useState(Cols.DealCols);
+
+  const onDataUpdate = (type,changes) => {
+    let data = currTab == 0 ? conData : dealData;
+    let cols = currTab == 0 ? conCols : dealCols;
+    
+    if(type == "update"){
+      changes.forEach(([row,col,oldVal,newVal]) => {
+        if(oldVal != newVal){
+          console.log("in if");
+          
+          if(row >= data.length) data[row] = {};
+          
+          data[row][col] = newVal;
+        }
+      });
+    }
+    else if(type == "removeRow"){
+      changes.forEach(row => {
+        data.splice(row,1);
+      });
+    }
+    else if(type == "addRow"){
+      let newRow = {}
+      cols.forEach(col => {
+        newRow[col.key] = "";
+      });
+      data.push(newRow);
+    }
+    
+    if(currTab == 0){
+      setConData(data);
+    }
+    else setDealData(data);
+  };
 
   return (
     <div className="App">
@@ -20,7 +59,7 @@ function App() {
             </ul>
           </div>
         </div>
-        <Tab datalist={currTab == 0 ? Data.contacts : Data.deals} cols={currTab == 0 ? Cols.ContactCols : Cols.DealCols} height={550}></Tab>
+        <Tab datalist={currTab == 0 ? conData : dealData} cols={currTab == 0 ? conCols : dealCols} height={550} onDataChange={(type,changes) => {onDataUpdate(type,changes)}}></Tab>
       </div>
     </div>
   );
